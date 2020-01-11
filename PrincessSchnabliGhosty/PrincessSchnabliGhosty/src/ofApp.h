@@ -1,6 +1,12 @@
 #pragma once
 
 #include "ofMain.h"
+#include <vector>
+#include "Cooky.h";
+#include "Enemy.h";
+#include "Tree.h";
+#include "Teleporter.h";
+#include "Schnabli.h"
 
 class ofApp : public ofBaseApp{
 
@@ -28,4 +34,12 @@ private:
 	int groundHeight = 300;
 	int groundWidth = 300;
 	ofTexture* groundTex;
+	int testanimation = 0;
+	//... gameObjects
+	Cooky* cookyObj;
+	vector<Enemy*> enemyObjs;
+	vector<Tree*> treeObjs;
+	Schnabli* player;
+	vector<Teleporter*> teleportObjs;
+	
 };

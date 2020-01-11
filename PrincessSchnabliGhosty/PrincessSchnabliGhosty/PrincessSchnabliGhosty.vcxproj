@@ -195,13 +195,13 @@ C:\openframeworks\of_v0.10.1_vs2017_release\addons\ofxFog\src;%(AdditionalInclud
     <ClCompile Include="..\..\..\..\..\addons\ofxGui\src\ofxSlider.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\ofxGui\src\ofxSliderGroup.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
-    <ClCompile Include="Cooky.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="Schnabli.cpp" />
+    <ClCompile Include="src\Cooky.cpp" />
+    <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
-    <ClCompile Include="Teleporter.cpp" />
-    <ClCompile Include="Tree.cpp" />
+    <ClCompile Include="src\Schnabli.cpp" />
+    <ClCompile Include="src\Teleporter.cpp" />
+    <ClCompile Include="src\Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\addons\ofxAssimpModelLoader\libs\assimp\include\assimp\ai_assert.h" />
@@ -262,12 +262,12 @@ C:\openframeworks\of_v0.10.1_vs2017_release\addons\ofxFog\src;%(AdditionalInclud
     <ClInclude Include="..\..\..\..\..\addons\ofxGui\src\ofxSlider.h" />
     <ClInclude Include="..\..\..\..\..\addons\ofxGui\src\ofxSliderGroup.h" />
     <ClInclude Include="..\..\..\..\..\addons\ofxGui\src\ofxToggle.h" />
-    <ClInclude Include="Cooky.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="Schnabli.h" />
+    <ClInclude Include="src\Cooky.h" />
+    <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\ofApp.h" />
-    <ClInclude Include="Teleporter.h" />
-    <ClInclude Include="Tree.h" />
+    <ClInclude Include="src\Schnabli.h" />
+    <ClInclude Include="src\Teleporter.h" />
+    <ClInclude Include="src\Tree.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">

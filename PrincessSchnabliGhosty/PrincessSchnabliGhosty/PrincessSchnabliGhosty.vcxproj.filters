@@ -52,19 +52,19 @@
     <ClCompile Include="..\..\..\..\..\addons\ofxFog\src\ofxFog.cpp">
       <Filter>addons\ofxFog\src</Filter>
     </ClCompile>
-    <ClCompile Include="Schnabli.cpp">
+    <ClCompile Include="src\Cooky.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Cooky.cpp">
+    <ClCompile Include="src\Enemy.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
+    <ClCompile Include="src\Schnabli.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Teleporter.cpp">
+    <ClCompile Include="src\Teleporter.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Tree.cpp">
+    <ClCompile Include="src\Tree.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -293,19 +293,19 @@
     <ClInclude Include="..\..\..\..\..\addons\ofxFog\src\ofxFog.h">
       <Filter>addons\ofxFog\src</Filter>
     </ClInclude>
-    <ClInclude Include="Schnabli.h">
+    <ClInclude Include="src\Cooky.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="Cooky.h">
+    <ClInclude Include="src\Enemy.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
+    <ClInclude Include="src\Schnabli.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="Teleporter.h">
+    <ClInclude Include="src\Teleporter.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="Tree.h">
+    <ClInclude Include="src\Tree.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

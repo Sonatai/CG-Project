@@ -20,7 +20,20 @@ void ofApp::setup() {
 	ground.setPosition(0, 0, 0);
 	ground.setResolution(2, 2);
 	groundTex = new ofTexture();
-	ofLoadImage(*groundTex, "Ground/testground.jpg");
+	ofLoadImage(*groundTex, "Ground/groundTex.png");
+
+	//... Setup Trees
+	//... Setup Schnabli
+	player = new Schnabli(new ofxAssimpModelLoader(), new ofTexture());
+	player->getSchnabliModel()->loadModel("Princess/Schnabli.dae");
+	ofLoadImage(*player->getSchnabliTex(), "Princess/SchnabliTex.png");
+	player -> getSchnabliModel()  -> setLoopStateForAllAnimations(OF_LOOP_NONE);
+	cout << player->getSchnabliModel()->getAnimationCount() << endl;
+	//... Setup Enemies
+	//... Setup Teleportportals
+	//... Setup Cooky
+	
+
 }
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -38,7 +51,11 @@ void ofApp::draw(){
 	ground.draw();
 	groundTex->unbind();
 
-
+	//... transparence
+	player->getSchnabliTex()->bind();
+	generateMipMap(player->getSchnabliTex());
+	player->getSchnabliModel()->drawFaces();
+	player->getSchnabliTex()->unbind();
 	cam.end();
 	
 }
@@ -57,7 +74,20 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+	if (key == ' ') {
+		cout << "space" << endl;
+		if (testanimation % 3 == 0) {
+			testanimation++;
+			player->getSchnabliModel()->getAnimation(0).play();
+		}
+		else if (testanimation % 3 == 1) {
+			testanimation++;
+			player->getSchnabliModel()->getAnimation(1).play();
+		}
+		else if (testanimation % 3 == 2) {
+			player->getSchnabliModel()->getAnimation(2).play();
+		}
+	}
 }
 
 //--------------------------------------------------------------
