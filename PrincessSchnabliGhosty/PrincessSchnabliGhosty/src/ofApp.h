@@ -1,12 +1,10 @@
 #pragma once
 
 #include "ofMain.h"
-#include <vector>
 #include "Cooky.h";
 #include "Enemy.h";
 #include "Tree.h";
 #include "Teleporter.h";
-#include "Schnabli.h"
 
 class ofApp : public ofBaseApp{
 
@@ -27,6 +25,8 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		void generateMipMap(ofTexture* texture);
+		void setupTrees(int treeNumber);
+		void DrawTrees();
 private: 
 	ofEasyCam cam;
 	int textureTarget;
@@ -37,9 +37,13 @@ private:
 	int testanimation = 0;
 	//... gameObjects
 	Cooky* cookyObj;
-	vector<Enemy*> enemyObjs;
-	vector<Tree*> treeObjs;
+	Enemy** enemies;
+	Tree** NOChunk;
+	Tree** OSChunk;
+	Tree** SWChunk;
+	Tree** WNChunk;
+	int treeNumber = 100;
 	Schnabli* player;
-	vector<Teleporter*> teleportObjs;
+	Tree** teleportObjs;
 	
 };

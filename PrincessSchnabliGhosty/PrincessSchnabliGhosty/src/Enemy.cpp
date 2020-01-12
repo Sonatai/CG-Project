@@ -1,12 +1,10 @@
 #include "Enemy.h"
 
-Enemy::Enemy(){}
-Enemy::Enemy(ofxAssimpModelLoader* model, ofTexture* texture){
-	enemyMesh = model;
-	enemyTex = texture;
+Enemy::Enemy(){
+	enemyTex = new ofTexture();
 }
 Enemy::~Enemy(){}
-ofxAssimpModelLoader* Enemy::getEnemyModel(){
+std::vector<ofxAssimpModelLoader*> Enemy::getEnemyModel(){
 	return enemyMesh;
 }
 ofTexture* Enemy::getEnemyTex() {

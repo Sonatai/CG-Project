@@ -1,18 +1,30 @@
 #pragma once
 #include <iostream>
-#include "ofxAssimpModelLoader.h"
 #include <vector>
+#include "TreeModel.h"
+#include "Schnabli.h"
+#include <cmath> 
 
 class Tree
 {
 public:
 	Tree();
-	Tree(std::vector<ofxAssimpModelLoader*> models, std::vector<ofTexture*> textures);
+	Tree(int x, int z);
 	~Tree();
-	std::vector<ofxAssimpModelLoader*> getTreeModelArr();
-	std::vector<ofTexture*> getTreeTexArr();
+	void setLOD1(int x);
+	ofxAssimpModelLoader* getTreeModel();
+	ofTexture* getTreeTexture();
+	void setPlayer(Schnabli* player);
+	void checkLOD();
+	void setupTree(int x, int z);
+
+
 private:
-	std::vector<ofTexture*> treeTexArr;
-	std::vector<ofxAssimpModelLoader*> treeMeshArr;
+	std::vector<ofxAssimpModelLoader> models;
+	std::vector<ofTexture> textures;
+	ofxAssimpModelLoader* currentModel;
+	ofTexture* currentTexture;
+	Schnabli* player;
+
 };
 

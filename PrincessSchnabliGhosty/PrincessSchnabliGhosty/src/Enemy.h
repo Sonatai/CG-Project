@@ -6,12 +6,11 @@ class Enemy
 {
 public:
 	Enemy();
-	Enemy(ofxAssimpModelLoader* model, ofTexture* texture);
 	~Enemy();
-	ofxAssimpModelLoader* getEnemyModel();
+	std::vector<ofxAssimpModelLoader*> getEnemyModel();
 	ofTexture* getEnemyTex();
 private:
 	ofTexture* enemyTex;
-	ofxAssimpModelLoader* enemyMesh;
+	std::vector<ofxAssimpModelLoader*> enemyMesh;
 };
 

@@ -1,17 +1,21 @@
 #pragma once
 #include <iostream>
 #include "ofxAssimpModelLoader.h"
+#include "ofxFBX.h"
 
 class Schnabli
 {
 public:
 	Schnabli();
-	Schnabli(ofxAssimpModelLoader* model, ofTexture* texture);
 	~Schnabli();
-	ofxAssimpModelLoader* getSchnabliModel();
-	ofTexture* getSchnabliTex();
+	ofxAssimpModelLoader* getPlayer();
+	ofTexture* getTexture();
+	void setupPlayer(int x, int z);
+	void setAnimationState(string state);
+
 private:
-	ofTexture* schnabliTex;
-	ofxAssimpModelLoader* schnabliMesh;
+	ofTexture* texture;
+	std::vector<ofxAssimpModelLoader> models;
+	ofxAssimpModelLoader* currentModel;
 };
 

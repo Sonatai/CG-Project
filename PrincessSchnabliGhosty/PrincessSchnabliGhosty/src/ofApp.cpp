@@ -1,8 +1,8 @@
 #include "ofApp.h"
 
+
 //--------------------------------------------------------------
 void ofApp::setup() {
-
 	//... Setup General
 	ofDisableArbTex();
 	ofSetVerticalSync(true);
@@ -22,25 +22,82 @@ void ofApp::setup() {
 	groundTex = new ofTexture();
 	ofLoadImage(*groundTex, "Ground/groundTex.png");
 
-	//... Setup Trees
+	
+
 	//... Setup Schnabli
-	player = new Schnabli(new ofxAssimpModelLoader(), new ofTexture());
-	player->getSchnabliModel()->loadModel("Princess/Schnabli.dae");
-	ofLoadImage(*player->getSchnabliTex(), "Princess/SchnabliTex.png");
-	player -> getSchnabliModel()  -> setLoopStateForAllAnimations(OF_LOOP_NONE);
-	cout << player->getSchnabliModel()->getAnimationCount() << endl;
+	player = new Schnabli();
+	player->setupPlayer(0, 0);
+	
 	//... Setup Enemies
 	//... Setup Teleportportals
 	//... Setup Cooky
-	
-
+	//... Setup Trees
+	//setupTrees(treeNumber);
 }
+
+/*void ofApp::setupTrees(int treeNumber) {
+	int x = - 150;
+	int z = -150;
+	for (int i = 0; i < treeNumber; i++) {
+		if (x < 0 && z < 0) {
+			NOChunk[NOChunk.size()]
+			NOChunk[NOChunk.size()-1].setPlayer(player);
+			NOChunk[NOChunk.size() - 1].checkLOD();
+		}
+		else if (x > 0 && z > 0) {
+			SWChunk.push_back(Tree(x, z));
+			SWChunk[SWChunk.size() - 1].setPlayer(player);
+			SWChunk[SWChunk.size() - 1].checkLOD();
+		}
+		else if (x > 0 && z < 0) {
+			WNChunk.push_back(Tree(x, z));
+			WNChunk[WNChunk.size() - 1].setPlayer(player);
+			WNChunk[WNChunk.size() - 1].checkLOD();
+		}
+		else if (x > 0 && z > 0) {
+			OSChunk.push_back(Tree(x, z));
+			OSChunk[OSChunk.size() - 1].setPlayer(player);
+			OSChunk[OSChunk.size() - 1].checkLOD();
+		}
+
+		x += 3;
+		z += 3;
+	}
+}*/
 //--------------------------------------------------------------
 void ofApp::update(){
 
 }
 
 //--------------------------------------------------------------
+
+/*void ofApp::DrawTrees() {
+	for (auto i = OSChunk.begin(); i != OSChunk.end(); i++) {
+		i->getTreeTexture()->bind();
+		generateMipMap(i->getTreeTexture());
+		i->getTreeModel()->drawFaces();
+		i->getTreeTexture()->unbind();
+	}
+	for (auto i = WNChunk.begin(); i != WNChunk.end(); i++) {
+		i->getTreeTexture()->bind();
+		generateMipMap(i->getTreeTexture());
+		i->getTreeModel()->drawFaces();
+		i->getTreeTexture()->unbind();
+	}
+	for (auto i = SWChunk.begin(); i != SWChunk.end(); i++) {
+		i->getTreeTexture()->bind();
+		generateMipMap(i->getTreeTexture());
+		i->getTreeModel()->drawFaces();
+		i->getTreeTexture()->unbind();
+	}
+	for (auto i = NOChunk.begin(); i != NOChunk.end(); i++) {
+		i->getTreeTexture()->bind();
+		generateMipMap(i->getTreeTexture());
+		i->getTreeModel()->drawFaces();
+		i->getTreeTexture()->unbind();
+	}
+}*/
+
 void ofApp::draw(){
 	
 	cam.begin();
@@ -51,11 +108,15 @@ void ofApp::draw(){
 	ground.draw();
 	groundTex->unbind();
 
+	//DrawTrees();
+
+
 	//... transparence
-	player->getSchnabliTex()->bind();
-	generateMipMap(player->getSchnabliTex());
-	player->getSchnabliModel()->drawFaces();
-	player->getSchnabliTex()->unbind();
+	player->getTexture()->bind();
+	generateMipMap(player->getTexture());
+	player->getPlayer()->drawFaces();
+	player->getTexture()->unbind();
+
 	cam.end();
 	
 }
@@ -74,20 +135,7 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-	if (key == ' ') {
-		cout << "space" << endl;
-		if (testanimation % 3 == 0) {
-			testanimation++;
-			player->getSchnabliModel()->getAnimation(0).play();
-		}
-		else if (testanimation % 3 == 1) {
-			testanimation++;
-			player->getSchnabliModel()->getAnimation(1).play();
-		}
-		else if (testanimation % 3 == 2) {
-			player->getSchnabliModel()->getAnimation(2).play();
-		}
-	}
+	
 }
 
 //--------------------------------------------------------------
