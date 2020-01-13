@@ -15,6 +15,7 @@ void ofApp::setup() {
 	ofSetColor(ofColor::grey);
 	ofSetSmoothLighting(true);
 
+
 	//... Setup Ground
 	ground.set(groundWidth, groundHeight);
 	ground.setPosition(0, 0, 0);
@@ -26,8 +27,7 @@ void ofApp::setup() {
 
 	//... Setup Schnabli
 	player = new Schnabli();
-	player->setupPlayer(0, 0);
-	
+	player->setupPlayer(10, 0);
 	//... Setup Enemies
 	//... Setup Teleportportals
 	//... Setup Cooky
@@ -66,6 +66,10 @@ void ofApp::setup() {
 }*/
 //--------------------------------------------------------------
 void ofApp::update(){
+	player->getPlayer()->update();
+	mesh = player->getPlayer()->getCurrentAnimatedMesh(0);
+	//sort mesh
+	//write back to assimp
 
 }
 
@@ -99,7 +103,7 @@ void ofApp::update(){
 }*/
 
 void ofApp::draw(){
-	
+	glEnable(GL_DEPTH_TEST);
 	cam.begin();
 	ofDrawGrid();
 
@@ -114,11 +118,13 @@ void ofApp::draw(){
 	//... transparence
 	player->getTexture()->bind();
 	generateMipMap(player->getTexture());
-	player->getPlayer()->drawFaces();
+	
+	mesh.drawFaces();
+	//player->getPlayer()->drawFaces();
 	player->getTexture()->unbind();
 
 	cam.end();
-	
+	glDisable(GL_DEPTH_TEST);
 }
 
 void ofApp::generateMipMap(ofTexture* texture) {

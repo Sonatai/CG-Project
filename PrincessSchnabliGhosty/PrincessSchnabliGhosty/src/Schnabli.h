@@ -10,12 +10,12 @@ public:
 	~Schnabli();
 	ofxAssimpModelLoader* getPlayer();
 	ofTexture* getTexture();
-	void setupPlayer(int x, int z);
+	void setupPlayer(int x, int y);
 	void setAnimationState(string state);
 
 private:
 	ofTexture* texture;
-	std::vector<ofxAssimpModelLoader> models;
+	std::vector<ofxAssimpModelLoader*> models;
 	ofxAssimpModelLoader* currentModel;
 };
 

@@ -45,5 +45,6 @@ private:
 	int treeNumber = 100;
 	Schnabli* player;
 	Tree** teleportObjs;
+	ofMesh mesh;
 	
 };
