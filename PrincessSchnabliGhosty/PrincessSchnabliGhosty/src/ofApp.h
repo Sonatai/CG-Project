@@ -35,7 +35,13 @@ private:
 	int groundHeight = 300;
 	int groundWidth = 300;
 	ofTexture* groundTex;
-	int testanimation = 0;
+	ofImage sky;
+
+	//... cam
+	int camOffset = 55;
+	float camDistance = 55;
+	float camDegree = -35;
+	bool camBounded = true;
 	//... gameObjects
 	Cooky* cookyObj;
 	Enemy** enemies;

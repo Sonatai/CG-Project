@@ -18,18 +18,21 @@ void Schnabli::setupPlayer(int x, int z){
 	models.at(0)->loadModel("Princess/Schnabli_walk.dae");
 	models.at(1)->loadModel("Princess/Schnabli_IdleDefault.dae");
 	models.at(2)->loadModel("Princess/Schnabli_IdleSpecial.dae");
-	float angle = 180;
+	float angle = -90;
 	int numRotation;
-	ofPoint axis = ofPoint(0.0, 1.0, 0.0);
+	ofPoint axis = ofPoint(1.0, 0.0, 0.0);
 	for (auto i = models.begin(); i != models.end(); i++) {
-		(*i)->setScale(0.05, 0.05, 0.05);
+		ofPushMatrix();
+		(*i)->setPosition(x, 2.5, z);
 		numRotation = (*i)->getNumRotations();
 		(*i)->setRotation(numRotation, angle, axis.x, axis.y, axis.z);
-		(*i)->setPosition(x,4,z);
+		(*i)->setScale(0.04, 0.04, 0.04);
+		ofPopMatrix();
 	}
+	models[0]->setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+	models[1]->setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+	models[2]->setLoopStateForAllAnimations(OF_LOOP_NONE);
 	currentModel = models.at(0);
-	cout << "Size of vector: " << models.size();
-	currentModel->setLoopStateForAllAnimations(OF_LOOP_NORMAL);
 	currentModel->getAnimation(0).play();
 }
 void Schnabli::setAnimationState(string state){
@@ -37,3 +40,6 @@ void Schnabli::setAnimationState(string state){
 	if (state == "IDLE");
 	if (state == "SPECIAL");
 }
+
+float Schnabli::getMSBackward() { return msBackward; }
+float Schnabli::getMSFoward() { return msForward; }

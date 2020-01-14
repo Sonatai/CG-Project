@@ -12,10 +12,14 @@ public:
 	ofTexture* getTexture();
 	void setupPlayer(int x, int z);
 	void setAnimationState(string state);
+	float getMSBackward();
+	float getMSFoward();
 
 private:
 	ofTexture* texture;
 	std::vector<ofxAssimpModelLoader*> models;
 	ofxAssimpModelLoader* currentModel;
+	float msForward = 0.5;
+	float msBackward = 0.25;
 };
 

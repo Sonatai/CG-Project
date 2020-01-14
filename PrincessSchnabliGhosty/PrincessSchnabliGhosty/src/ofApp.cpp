@@ -6,11 +6,13 @@ void ofApp::setup() {
 	ofDisableArbTex();
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
-	cam.enableMouseInput();
 	ofSetWindowTitle("Princess Schnabli Ghosty");
 	ofSetColor(ofColor::grey);
 	ofSetSmoothLighting(true);
+	ofLoadIdentityMatrix();
 
+	//... Sky
+	sky.load("skybox.jpeg");
 
 	//... Setup Ground
 	
@@ -20,18 +22,15 @@ void ofApp::setup() {
 	groundTex = new ofTexture();
 	ofLoadImage(*groundTex, "Ground/groundTex.png");
 
-
-	
-
 	//... Setup Schnabli
 	player = new Schnabli();
 	player->setupPlayer(0, 0);
 	
 	//... Setup Cam
-	cam.setPosition(player->getPlayer()->getPosition().x, player->getPlayer()->getPosition().y + 5, player->getPlayer()->getPosition().z);
-	//cam.setDistance(200);
-	//cam.setPosition(0, 0, 0);
-	//cam.tilt(-50);
+	glm::vec3 rotationAxis = glm::vec3(1, 0, 0);
+	cam.rotateDeg(camDegree, rotationAxis);
+	cam.disableMouseInput();
+
 
 	//... Setup Enemies
 	//... Setup Teleportportals
@@ -72,8 +71,13 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 
 
-void ofApp::update(){
+void ofApp::update() {
 	player->getPlayer()->update();
+	if (camBounded) {
+		cout << "Cam bounded" << endl;
+		cam.setPosition(player->getPlayer()->getPosition().x + 10, player->getPlayer()->getPosition().y + 40, player->getPlayer()->getPosition().z);
+
+	}
 }
 
 //--------------------------------------------------------------
@@ -106,12 +110,19 @@ void ofApp::update(){
 }*/
 
 void ofApp::draw(){
+
+	ofEnableLighting();
+
+	glDisable(GL_DEPTH_TEST);
+
+	sky.draw(0, 0);
+
 	glEnable(GL_DEPTH_TEST);
 	cam.begin();
 	ofDrawGrid();
 
 	ofPushMatrix();
-	ofRotateY(180);
+	ofRotateX(90);
 	groundTex->bind();
 	generateMipMap(groundTex);
 	ground.draw();
@@ -130,6 +141,9 @@ void ofApp::draw(){
 
 	cam.end();
 	glDisable(GL_DEPTH_TEST);
+
+	ofDisableLighting();
+
 }
 
 void ofApp::generateMipMap(ofTexture* texture) {
@@ -141,7 +155,31 @@ void ofApp::generateMipMap(ofTexture* texture) {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+	ofPoint position;
+	if (key == 'w') {
+		position = player->getPlayer()->getPosition();
+		position.z -= player->getMSFoward();
+		player->getPlayer()->setPosition(position.x,position.y,position.z);
+	}
+	else if (key == 's') {
+		position = player->getPlayer()->getPosition();
+		position.z += player->getMSBackward();
+		player->getPlayer()->setPosition(position.x, position.y, position.z);
+	}
+	else if (key == 'a') {
+		//... rotate to left
+	}
+	else if (key == 'd') {
+		//... rotate to right
+	}
+	if (key == ' ') {
+		camBounded = !camBounded;
+		if(camBounded)
+			cam.disableMouseInput();
+		else
+			cam.enableMouseInput();
+	}
+	
 }
 
 //--------------------------------------------------------------
