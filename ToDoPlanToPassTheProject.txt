@@ -1,0 +1,22 @@
+Heutiges Ziel:
+Spieler
+	* kann sich bewegen
+	* kann rotieren
+	* kann Animationen richtig abspielen
+Kamera 
+	* beweg sich mit dem Spieler
+	* rotiert sich mit dem Spieler
+	* wird mit Leertaste frei gesetzt
+	* springt wieder ein default positon, wenn abermals Leertaste gedrückt wird
+Setups:
+	* PointLights
+	* Background Image
+-------------------------------------------------------------------------------------
+Morgiges Ziel:
+Bäume
+	* werden gesetzt
+	* werden im richtigen LOD geladen
+	* Nebel, der den LOD load verschleiert
+Würfel
+	* ist transperent
+	* Planes werden richtig sortiert

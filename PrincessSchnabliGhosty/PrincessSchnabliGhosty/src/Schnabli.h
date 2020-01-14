@@ -10,7 +10,7 @@ public:
 	~Schnabli();
 	ofxAssimpModelLoader* getPlayer();
 	ofTexture* getTexture();
-	void setupPlayer(int x, int y);
+	void setupPlayer(int x, int z);
 	void setAnimationState(string state);
 
 private:

@@ -27,6 +27,7 @@ class ofApp : public ofBaseApp{
 		void generateMipMap(ofTexture* texture);
 		void setupTrees(int treeNumber);
 		void DrawTrees();
+		void sortMesh();
 private: 
 	ofEasyCam cam;
 	int textureTarget;
@@ -38,13 +39,12 @@ private:
 	//... gameObjects
 	Cooky* cookyObj;
 	Enemy** enemies;
-	Tree** NOChunk;
-	Tree** OSChunk;
-	Tree** SWChunk;
-	Tree** WNChunk;
+	vector<Tree*> NOChunk;
+	vector<Tree*>  OSChunk;
+	vector<Tree*>  SWChunk;
+	vector<Tree*>  WNChunk;
 	int treeNumber = 100;
 	Schnabli* player;
 	Tree** teleportObjs;
-	ofMesh mesh;
 	
 };

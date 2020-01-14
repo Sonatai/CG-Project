@@ -1,15 +1,11 @@
 #include "ofApp.h"
 
-
 //--------------------------------------------------------------
 void ofApp::setup() {
 	//... Setup General
 	ofDisableArbTex();
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
-	//cam.setDistance(200);
-	//cam.setPosition(0, 0, 0);
-	//cam.tilt(-50);
 	cam.enableMouseInput();
 	ofSetWindowTitle("Princess Schnabli Ghosty");
 	ofSetColor(ofColor::grey);
@@ -17,17 +13,26 @@ void ofApp::setup() {
 
 
 	//... Setup Ground
+	
 	ground.set(groundWidth, groundHeight);
 	ground.setPosition(0, 0, 0);
 	ground.setResolution(2, 2);
 	groundTex = new ofTexture();
 	ofLoadImage(*groundTex, "Ground/groundTex.png");
 
+
 	
 
 	//... Setup Schnabli
 	player = new Schnabli();
-	player->setupPlayer(10, 0);
+	player->setupPlayer(0, 0);
+	
+	//... Setup Cam
+	cam.setPosition(player->getPlayer()->getPosition().x, player->getPlayer()->getPosition().y + 5, player->getPlayer()->getPosition().z);
+	//cam.setDistance(200);
+	//cam.setPosition(0, 0, 0);
+	//cam.tilt(-50);
+
 	//... Setup Enemies
 	//... Setup Teleportportals
 	//... Setup Cooky
@@ -65,12 +70,10 @@ void ofApp::setup() {
 	}
 }*/
 //--------------------------------------------------------------
+
+
 void ofApp::update(){
 	player->getPlayer()->update();
-	mesh = player->getPlayer()->getCurrentAnimatedMesh(0);
-	//sort mesh
-	//write back to assimp
-
 }
 
 //--------------------------------------------------------------
@@ -107,21 +110,23 @@ void ofApp::draw(){
 	cam.begin();
 	ofDrawGrid();
 
+	ofPushMatrix();
+	ofRotateY(180);
 	groundTex->bind();
 	generateMipMap(groundTex);
 	ground.draw();
 	groundTex->unbind();
+	ofPopMatrix();
 
-	//DrawTrees();
+	//Player 
 
-
-	//... transparence
 	player->getTexture()->bind();
 	generateMipMap(player->getTexture());
-	
-	mesh.drawFaces();
-	//player->getPlayer()->drawFaces();
+	player->getPlayer()->drawFaces();
 	player->getTexture()->unbind();
+
+	//... transparence
+	
 
 	cam.end();
 	glDisable(GL_DEPTH_TEST);
