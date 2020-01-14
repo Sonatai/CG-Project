@@ -1,13 +1,13 @@
 Heutiges Ziel:
 Spieler
-	* kann sich bewegen
-	* kann rotieren
-	* kann Animationen richtig abspielen
+	X kann sich bewegen
+	?? kann rotieren -> left/right wrong, little bit cluncky
+	X kann Animationen richtig abspielen -> More or less bug free....
 Kamera 
-	* beweg sich mit dem Spieler
-	* rotiert sich mit dem Spieler
-	* wird mit Leertaste frei gesetzt
-	* springt wieder ein default positon, wenn abermals Leertaste gedrückt wird
+	X beweg sich mit dem Spieler
+	D rotiert sich mit dem Spieler
+	X wird mit Leertaste frei gesetzt
+	X springt wieder ein default positon, wenn abermals Leertaste gedrückt wird
 Setups:
 	* PointLights
 	* Background Image

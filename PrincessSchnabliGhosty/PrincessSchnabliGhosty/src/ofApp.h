@@ -25,9 +25,9 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		void generateMipMap(ofTexture* texture);
-		void setupTrees(int treeNumber);
-		void DrawTrees();
-		void sortMesh();
+		void rotatePlayer(int position);
+		int getRightRotation(int position);
+		void movePlayer(ofPoint position);
 private: 
 	ofEasyCam cam;
 	int textureTarget;
@@ -36,12 +36,17 @@ private:
 	int groundWidth = 300;
 	ofTexture* groundTex;
 	ofImage sky;
+	int idleCount = 0;
 
 	//... cam
-	int camOffset = 55;
-	float camDistance = 55;
+	int camOffsetY = 7;
+	int camOffsetZ = -20;
 	float camDegree = -35;
 	bool camBounded = true;
+
+	//... light
+	ofLight pointlight;
+
 	//... gameObjects
 	Cooky* cookyObj;
 	Enemy** enemies;
