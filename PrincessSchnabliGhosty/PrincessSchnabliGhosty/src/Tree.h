@@ -9,22 +9,21 @@ class Tree
 {
 public:
 	Tree();
-	Tree(int x, int z);
+	Tree(int x, int z, std::vector<ofxAssimpModelLoader*>& LODmodels, std::vector<ofTexture*>* LODtextures);
 	~Tree();
 	void setLOD1(int x);
 	ofxAssimpModelLoader* getTreeModel();
 	ofTexture* getTreeTexture();
 	void setPlayer(Schnabli* player);
 	void checkLOD();
-	void setupTree(int x, int z);
+	void setupTree(int x, int z, std::vector<ofxAssimpModelLoader*>&LODmodels, std::vector<ofTexture*>* LODtextures);
 
 
 private:
-	std::vector<ofxAssimpModelLoader> models;
-	std::vector<ofTexture> textures;
+	std::vector<ofxAssimpModelLoader*> models;
+	std::vector<ofTexture*>* textures;
 	ofxAssimpModelLoader* currentModel;
 	ofTexture* currentTexture;
 	Schnabli* player;
-
 };
 
