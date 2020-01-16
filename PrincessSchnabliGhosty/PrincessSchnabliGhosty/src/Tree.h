@@ -9,7 +9,7 @@ class Tree
 {
 public:
 	Tree();
-	Tree(int x, int z, std::vector<ofxAssimpModelLoader*>& LODmodels, std::vector<ofTexture*>* LODtextures);
+	Tree(int x, int z, std::vector<ofxAssimpModelLoader*>& LODmodels, std::vector<ofTexture*>* LODtextures, Schnabli* player);
 	~Tree();
 	void setLOD1(int x);
 	ofxAssimpModelLoader* getTreeModel();

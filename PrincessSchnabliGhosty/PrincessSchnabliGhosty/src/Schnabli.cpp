@@ -31,7 +31,7 @@ void Schnabli::setupPlayer(int x, int z){
 	}
 	models[0]->setLoopStateForAllAnimations(OF_LOOP_NORMAL);
 	models[1]->setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-	models[2]->setLoopStateForAllAnimations(OF_LOOP_NONE);
+	models[2]->setLoopStateForAllAnimations(OF_LOOP_NORMAL);
 	currentModel = models.at(1);
 	currentModel->getAnimation(1).play();
 }

@@ -21,6 +21,7 @@ public:
 	std::vector<ofxAssimpModelLoader*>& getModels();
 	void checkeSpecialMove();
 
+
 private:
 	ofTexture* texture;
 	std::vector<ofxAssimpModelLoader*> models;

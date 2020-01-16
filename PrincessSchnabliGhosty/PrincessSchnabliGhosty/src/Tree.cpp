@@ -1,8 +1,9 @@
 #include "Tree.h"
 
 Tree::Tree(){}
-Tree::Tree(int x, int z, std::vector<ofxAssimpModelLoader*>& LODmodels, std::vector<ofTexture*>* LODtextures) {
+Tree::Tree(int x, int z, std::vector<ofxAssimpModelLoader*>& LODmodels, std::vector<ofTexture*>* LODtextures, Schnabli* player) {
 	setupTree(x, z, LODmodels,  LODtextures);
+	setPlayer(player);
 }
 Tree::~Tree(){}
 void Tree::setLOD1(int x) {
@@ -22,14 +23,13 @@ void Tree::setPlayer(Schnabli* player) {
 void Tree::checkLOD() {
 	float distance = std::sqrt(
 		std::pow(currentModel->getPosition().x - player->getPlayer()->getPosition().x, 2) +
-		std::pow(currentModel->getPosition().y - player->getPlayer()->getPosition().y, 2) +
 		std::pow(currentModel->getPosition().z - player->getPlayer()->getPosition().z, 2)
 	);
-	if (distance < 50) {
+	if (distance < 150) {
 		currentModel = models.at(0);
 		currentTexture = textures->at(0);
 	}
-	else if (distance < 100) {
+	else if (distance < 300) {
 		currentModel = models.at(1);
 		currentTexture = textures->at(1);
 	}

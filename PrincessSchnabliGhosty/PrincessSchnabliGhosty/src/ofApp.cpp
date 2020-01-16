@@ -1,18 +1,29 @@
 #include "ofApp.h"
 
+
 //--------------------------------------------------------------
 void ofApp::setup() {
 	//... Setup General
+	srand(time(0));
 	ofDisableArbTex();
 	ofSetVerticalSync(true);
 	ofSetFrameRate(60);
 	ofSetWindowTitle("Princess Schnabli Ghosty");
-	ofSetColor(ofColor::grey);
+	ofSetColor(ofColor::whiteSmoke);
 	ofSetSmoothLighting(true);
 	ofLoadIdentityMatrix();
 
-	//... Sky
+	//... Setup Fog
+	fog = ofxFog();
+	fog.setfogColor(ofColor(100, 180, 180,100));
+	fog.setDensity(0.01);
+	fog.setFogMode(GL_EXP2);
+	fog.setFogStartEnd(900, 1000);
+	fog.enable();
+
+	//... Setup Sky - doesnt work :)
 	sky.load("skybox.jpeg");
+	sky.setAnchorPoint(1, 1);
 
 	//... Setup Ground
 	
@@ -22,9 +33,12 @@ void ofApp::setup() {
 	groundTex = new ofTexture();
 	ofLoadImage(*groundTex, "Ground/groundTex.png");
 
+	generateMipMap(groundTex);
+
 	//... Setup Schnabli
 	player = new Schnabli();
 	player->setupPlayer(0, 0);
+	generateMipMap(player->getTexture());
 	
 	/****************
 	*	Setup Cam	*
@@ -63,25 +77,24 @@ void ofApp::setup() {
 	for (auto i = treeLODmodels.begin(); i != treeLODmodels.end(); i++) {
 		numRotation = (*i)->getNumRotations();
 		ofPushMatrix();
-		(*i)->setScale(0.05, 0.05, 0.05);
 		(*i)->setRotation(numRotation, angle, axis.x, axis.y, axis.z);
 		(*i)->setPosition(0, 0, 0);
 		ofPopMatrix();
 	}
+	int* arr;
+	for (int i = 0; i < 400; i++) {
+		arr = spwanPoint();
+		addTree(arr[0], arr[1], treeLODmodels, &treeLODtexture);
+	}
+	checkPlayerChunk(1, 1, 1, 1);
 
-	testTree1 = new Tree(10, 10, treeLODmodels, &treeLODtexture);
-	testTree2 = new Tree(60, 60, treeLODmodels, &treeLODtexture);
-	testTree3 = new Tree(100, 100, treeLODmodels, &treeLODtexture);
-	testTree4 = new Tree(200, -200, treeLODmodels, &treeLODtexture);
-	NOChunk.push_back(new Tree(10, 10, treeLODmodels, &treeLODtexture));
-
-	testTree1->setPlayer(player);
-	testTree2->setPlayer(player);
-	testTree3->setPlayer(player);
-	testTree4->setPlayer(player);
+	generateMipMap(treeLODtexture[0]);
+	generateMipMap(treeLODtexture[1]);
+	generateMipMap(treeLODtexture[2]);
 
 	//... ofCube?
 	cube = new Cube();
+	cube->setReferenceCam(cam);
 	cube->generateCube();
 	
 	//... Pointlight ... Dunno how it works -> changes dont matter
@@ -112,10 +125,41 @@ void ofApp::setup() {
 	ofPopMatrix();
 }
 
-
+int* ofApp::spwanPoint() { 
+	int spawnpoint[2];
+	int vX = (rand() % 2);
+	int vY = (rand() % 2);
+	spawnpoint[0] = (rand() % 1000)-500;
+	spawnpoint[1] = (rand() % 1000)-500;
+	return spawnpoint;
+}
 //--------------------------------------------------------------
-void addTree(int x, int z, std::vector<ofxAssimpModelLoader*>& LODmodels, std::vector<ofTexture*>* LODtextures) {
-	//add a tree to a chunck.
+void ofApp::addTree(int x, int z, std::vector<ofxAssimpModelLoader*>& LODmodels, std::vector<ofTexture*>* LODtextures) {
+	int angle = (z - (rand() % 360)) % 360;
+	int numRotation;
+	ofPoint axis = ofPoint(0.0, 1.0, 0.0);
+	float scalingFactor = ((rand() % 100) + 1) * 0.0003;
+	float scaling = 0.04 + scalingFactor;
+
+	for (auto i = LODmodels.begin(); i != LODmodels.end(); i++) {
+		numRotation = (*i)->getNumRotations();
+		ofPushMatrix();
+		(*i)->setScale(scaling,scaling,scaling);
+		(*i)->setRotation(numRotation, angle, axis.x, axis.y, axis.z);
+		ofPopMatrix();
+	}
+	if (z > 0 && x < 0) {
+		WNChunk.push_back(new Tree(x, z, treeLODmodels, &treeLODtexture,player));
+	}
+	else if (z > 0 && x > 0) {
+		NOChunk.push_back(new Tree(x, z, treeLODmodels, &treeLODtexture,player));
+	}
+	else if (z < 0 && x>0) {
+		OSChunk.push_back(new Tree(x, z, treeLODmodels, &treeLODtexture,player));
+	}
+	else if (z < 0 && x < 0) {
+		SWChunk.push_back(new Tree(x, z, treeLODmodels, &treeLODtexture,player));
+	}
 }
 
 void ofApp::update() {
@@ -124,18 +168,75 @@ void ofApp::update() {
 		player->setAnimationState("SPECIAL");
 		idleCount = 0;
 	}
-	player -> checkeSpecialMove();
+	if(!isMoving)
+		player -> checkeSpecialMove();
 	player->getPlayer()->update();
 	if (camBounded) {
 		ofPushMatrix();
 		cam->setPosition(player->getPlayer()->getPosition().x, player->getPlayer()->getPosition().y +camOffsetY, player->getPlayer()->getPosition().z-camOffsetZ);
 		ofPopMatrix();
 	}
-	testTree1->checkLOD();
-	testTree2->checkLOD();
-	testTree3->checkLOD();
-	testTree4->checkLOD();
+	LODCount--;
+	if (LODCount < 0) {
+		int z = player->getPlayer()->getPosition().z;
+		int x = player->getPlayer()->getPosition().x;
 
+		if ( z<= -100 && x <= -100) {
+			checkPlayerChunk(0, 0, 1, 0);
+		}
+		else if (z<=-100 && x>-100 && x <= 100) {
+			checkPlayerChunk(0, 1, 1, 0);
+		}
+		else if (z <= -100 && x > 100) {
+			checkPlayerChunk(0, 1, 0, 0);
+		}
+		else if (z > -100 && z <= 100 && x <= 100) {
+			checkPlayerChunk(0, 0, 1, 1);
+		}
+		else if (z > -100 && z <= 100 && x > -100 && x <= 100) {
+			checkPlayerChunk(1, 1, 1, 1);
+		}
+		else if (z > -100 && z <= 100 && x > 100) {
+			checkPlayerChunk(1, 1, 0, 0);
+		}
+		else if (z > 100 && x <= -100) {
+			checkPlayerChunk(0, 0, 0, 1);
+		}
+		else if (z > 100 && x > -100 && x <= 100) {
+			checkPlayerChunk(1, 0, 0, 1);
+		}
+		else if (z > 100 && x > 100) {
+			checkPlayerChunk(1, 0, 0, 0);
+		}
+		//checkPlayerChunk(1, 1, 1, 1);
+		
+		
+		LODCount = 30;
+	}
+	cube->sortCube();
+
+}
+void ofApp::checkPlayerChunk(bool NO, bool OS, bool SW, bool WN) {
+	if (NO) {
+		for (auto i = NOChunk.begin(); i != NOChunk.end(); i++) {
+			(*i)->checkLOD();
+		}
+	}
+	if (OS) {
+		for (auto i = OSChunk.begin(); i != OSChunk.end(); i++) {
+			(*i)->checkLOD();
+		}
+	}
+	if (SW) {
+		for (auto i = SWChunk.begin(); i != SWChunk.end(); i++) {
+			(*i)->checkLOD();
+		}
+	}
+	if (WN) {
+		for (auto i = WNChunk.begin(); i != WNChunk.end(); i++) {
+			(*i)->checkLOD();
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -146,7 +247,7 @@ void ofApp::draw(){
 	ofEnableLighting();
 
 	glDisable(GL_DEPTH_TEST);
-	sky.draw(0, 0);
+	sky.draw(1, 1);
 	glEnable(GL_DEPTH_TEST);
 
 	spotlight.enable();
@@ -154,11 +255,11 @@ void ofApp::draw(){
 
 	cam->begin();
 	ofDrawGrid();
+	glEnable(GL_NORMALIZE);
 
 	ofPushMatrix();
 	ofRotateXDeg(90);
 	groundTex->bind();
-	generateMipMap(groundTex);
 	ground.draw();
 	groundTex->unbind();
 	ofPopMatrix();
@@ -166,30 +267,31 @@ void ofApp::draw(){
 	//... Player 
 
 	player->getTexture()->bind();
-	generateMipMap(player->getTexture());
 	player->getPlayer()->drawFaces();
 	player->getTexture()->unbind();
 
-	//... Trees
-	testTree1->getTreeTexture()->bind();
-	generateMipMap(testTree1->getTreeTexture());
-	testTree1->getTreeModel()->drawFaces();
-	testTree1->getTreeTexture()->unbind();
+	
 
-	testTree2->getTreeTexture()->bind();
-	generateMipMap(testTree2->getTreeTexture());
-	testTree2->getTreeModel()->drawFaces();
-	testTree2->getTreeTexture()->unbind();
-
-	testTree3->getTreeTexture()->bind();
-	generateMipMap(testTree3->getTreeTexture());
-	testTree3->getTreeModel()->drawFaces();
-	testTree3->getTreeTexture()->unbind();
-
-	testTree4->getTreeTexture()->bind();
-	generateMipMap(testTree4->getTreeTexture());
-	testTree4->getTreeModel()->drawFaces();
-	testTree4->getTreeTexture()->unbind();
+	for (auto i = NOChunk.begin(); i != NOChunk.end(); i++) {
+		(*i)->getTreeTexture()->bind();
+		(*i)->getTreeModel()->drawFaces();
+		(*i)->getTreeTexture()->unbind();
+	}
+	for (auto i = OSChunk.begin(); i != OSChunk.end(); i++) {
+		(*i)->getTreeTexture()->bind();
+		(*i)->getTreeModel()->drawFaces();
+		(*i)->getTreeTexture()->unbind();
+	}
+	for (auto i = SWChunk.begin(); i != SWChunk.end(); i++) {
+		(*i)->getTreeTexture()->bind();
+		(*i)->getTreeModel()->drawFaces();
+		(*i)->getTreeTexture()->unbind();
+	}
+	for (auto i = WNChunk.begin(); i != WNChunk.end(); i++) {
+		(*i)->getTreeTexture()->bind();
+		(*i)->getTreeModel()->drawFaces();
+		(*i)->getTreeTexture()->unbind();
+	}
 
 	//... transparence
 	cube->drawCube();
@@ -234,9 +336,9 @@ void ofApp::keyPressed(int key){
 		}
 		isMoving = true;
 	}
-	else if (key == 'a') {
+	else if (key == 'd') {
 		ofPoint position = player->getPlayer()->getPosition();
-		position.x -= player->getMSFoward();
+		position.x += player->getMSFoward();
 
 		movePlayer(position);
 		if (!player->IsRotated()) {
@@ -245,9 +347,9 @@ void ofApp::keyPressed(int key){
 		}
 		isMoving = true;
 	}
-	else if (key == 'd') {
+	else if (key == 'a') {
 		ofPoint position = player->getPlayer()->getPosition();
-		position.x += player->getMSFoward();
+		position.x -= player->getMSFoward();
 
 		movePlayer(position);
 		if (!player->IsRotated()) {
@@ -270,15 +372,13 @@ void ofApp::movePlayer(ofPoint position) {
 	}
 }
 void ofApp::rotatePlayer(int position) {
+	//TODO FIX BUG ROTATION SUCKS
 	int angle = getRightRotation(position);
 	ofPoint axis = ofPoint(0.0, 0.0, 1.0);
-	int numRotation = player->getPlayer()->getNumRotations();
-	ofPushMatrix();
-	player->getPlayer()->setRotation(numRotation, angle, axis.x, axis.y, axis.z);
-	ofPopMatrix();
+	int numRotation;
 	for (auto i = player->getModels().begin(); i != player->getModels().end(); i++) {
+			numRotation = (*i)->getNumRotations();
 		ofPushMatrix();
-		numRotation = (*i)->getNumRotations();
 		(*i)->setRotation(numRotation, angle, axis.x, axis.y, axis.z);
 		ofPopMatrix();
 	}
@@ -291,25 +391,25 @@ int ofApp::getRightRotation(int position) {
 	case 0:
 		(playerPosition == 0) ? angle = 0 :
 			(playerPosition == 1) ? angle = -90 :
-			(playerPosition == 2) ? angle = -180 :
+			(playerPosition == 2) ? angle = 180 :
 			angle = -270;
 		break;
 	case 1:
-		(playerPosition == 0) ? angle = -270 :
+		(playerPosition == 0) ? angle = 90 :
 			(playerPosition == 1) ? angle = 0 :
 			(playerPosition == 2) ? angle = -90 :
-			angle = -180;
+			angle = 180;
 		break;
 	case 2:
-		(playerPosition == 0) ? angle = -180 :
-			(playerPosition == 1) ? angle = -270 :
+		(playerPosition == 0) ? angle = 180 :
+			(playerPosition == 1) ? angle = 90 :
 			(playerPosition == 2) ? angle = 0 :
 			angle = -90;
 		break;
 	case 3:
 		(playerPosition == 0) ? angle = -90 :
-			(playerPosition == 1) ? angle = -180 :
-			(playerPosition == 2) ? angle = -270 :
+			(playerPosition == 1) ? angle = 180 :
+			(playerPosition == 2) ? angle = 90 :
 			angle = 0;
 		break;
 	}
@@ -330,6 +430,16 @@ void ofApp::keyReleased(int key){
 			cam->setDistance(30);
 			cam->enableMouseInput();
 			cam->enableMouseMiddleButton();
+		}
+	}
+	if (key == 'f') {
+		if (isFog) {
+			fog.disable();
+			isFog = false;
+		}
+		else {
+			fog.enable();
+			isFog = true;
 		}
 	}
 	player->IsRotated(false);
@@ -395,56 +505,79 @@ void ofApp::Cube::generateCube() {
 	
 	ofPushMatrix();
 	cubeSides[0]->set(5, 5);
-	cubeSides[0]->setPosition(0, 0, 0);
+	cubeSides[0]->setPosition(2.5, 5, 0);
 	cubeSides[0]->setResolution(2, 2);
+	cubeSides[0]->enableColors();
+	cubeSides[0]->rotateDeg(90, 0, 1, 0);
 	ofPopMatrix();
 
 	ofPushMatrix();
 	cubeSides[1]->set(5, 5);
-	cubeSides[1]->setPosition(0, 5, 0);
+	cubeSides[1]->setPosition(-2.5, 5, 0);
 	cubeSides[1]->setResolution(2, 2);
+	cubeSides[1]->enableColors();
+	cubeSides[1]->rotateDeg(-90, 0, 1, 0);
 	ofPopMatrix();
 
 	ofPushMatrix();
 	cubeSides[2]->set(5, 5);
-	cubeSides[2]->setPosition(2.5, 0, 0);
+	cubeSides[2]->setPosition(0, 7.5, 0);
 	cubeSides[2]->setResolution(2, 2);
-	ofRotateXDeg(90);
+	cubeSides[2]->enableColors();
+	cubeSides[2]->rotateDeg(90, 1, 0, 0);
 	ofPopMatrix();
 
 	ofPushMatrix();
 	cubeSides[3]->set(5, 5);
-	cubeSides[3]->setPosition(-2.5, 0, 0);
+	cubeSides[3]->setPosition(0, 2.5, 0);
 	cubeSides[3]->setResolution(2, 2);
-	ofRotateXDeg(90);
+	cubeSides[3]->enableColors();
+	cubeSides[3]->rotateDeg(-90, 1, 0, 0);
 	ofPopMatrix();
 
 	ofPushMatrix();
 	cubeSides[4]->set(5, 5);
-	cubeSides[4]->setPosition(0, 0, 2.5);
+	cubeSides[4]->setPosition(0, 5,2.5);
 	cubeSides[4]->setResolution(2, 2);
-	ofRotateZDeg(90);
+	cubeSides[4]->enableColors();
 	ofPopMatrix();
 
 	ofPushMatrix();
 	cubeSides[5]->set(5, 5);
-	cubeSides[5]->setPosition(0, 0, -2.5);
+	cubeSides[5]->setPosition(0, 5, -2.5);
 	cubeSides[5]->setResolution(2, 2);
-	ofRotateZDeg(90);
+	cubeSides[5]->enableColors();
+	cubeSides[5]->rotateDeg(180, 0, 1, 0);
 	ofPopMatrix();
 
 }
-void ofApp::Cube::setReferencePlayer(Schnabli& playerRef) {
-	player = playerRef;
+void ofApp::Cube::setReferenceCam(ofEasyCam* camRef) {
+	cam = camRef;
 }
 void ofApp::Cube::sortCube() {
+	for (int i = 0; i < cubeSides.size() - 1; i++) {
+		for (int j = 0; j < cubeSides.size() - i - 1; j++) {
+			ofVec3f cPos1 = cubeSides[j]->getPosition();
+			ofVec3f cPos2 = cubeSides[j + 1]->getPosition();
+			if (cPos1.squareDistance(cam->getPosition()) < cPos2.squareDistance(cam->getPosition())) {
+				std::swap(cubeSides[j], cubeSides[j + 1]);
+			}
+		}
+	}
 
 }
 void ofApp::Cube::drawCube() {
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	ofSetColor(ofColor(255, 0, 200, 90));
 	cubeSides[0]->drawFaces();
 	cubeSides[1]->drawFaces();
 	cubeSides[2]->drawFaces();
 	cubeSides[3]->drawFaces();
 	cubeSides[4]->drawFaces();
 	cubeSides[5]->drawFaces();
+	glDisable(GL_BLEND);
+	ofSetColor(ofColor::whiteSmoke);
+
 }

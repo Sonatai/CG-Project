@@ -1,10 +1,11 @@
 #pragma once
 
+#include <ctime>  
+#include <cstdlib> 
 #include "ofMain.h"
-#include "Cooky.h";
-#include "Enemy.h";
-#include "Tree.h";
-#include "Teleporter.h";
+#include "Tree.h"
+#include "ofxFog.h"
+
 class ofApp : public ofBaseApp{
 
 	public:
@@ -27,21 +28,26 @@ class ofApp : public ofBaseApp{
 		void rotatePlayer(int position);
 		int getRightRotation(int position);
 		void movePlayer(ofPoint position);
+		void addTree(int x, int z, std::vector<ofxAssimpModelLoader*>& LODmodels, std::vector<ofTexture*>* LODtextures);
+		int* spwanPoint();
+		
 		class Cube
 		{
 		public:
 			Cube();
 			~Cube();
 			void generateCube();
-			void setReferencePlayer(Schnabli& playerRef);
+			void setReferenceCam(ofEasyCam* camRef);
 			void sortCube();
 			void drawCube();
 
 
 		private:
 			vector<ofPlanePrimitive*> cubeSides;
-			Schnabli player;
+			ofEasyCam* cam;
 		};
+
+		void checkPlayerChunk(bool NO, bool OS, bool SW, bool WN);
 
 private: 
 	ofEasyCam* cam;
@@ -55,8 +61,8 @@ private:
 
 	//... cam
 	int camOffsetY = 28;
-	int camOffsetZ = -30;
-	float camDegree = -35;
+	int camOffsetZ = -40;
+	float camDegree = -30;
 	bool camBounded = true;
 
 	//... light
@@ -76,9 +82,13 @@ private:
 	Tree* testTree2;
 	Tree* testTree3;
 	Tree* testTree4;
+	int LODCount = 30;
 
 	Schnabli* player;
 	bool isMoving = false;
+
+	ofxFog fog;
+	bool isFog = true;
 
 	ofApp::Cube* cube;
 	
