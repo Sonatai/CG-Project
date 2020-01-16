@@ -25,11 +25,11 @@ void Tree::checkLOD() {
 		std::pow(currentModel->getPosition().x - player->getPlayer()->getPosition().x, 2) +
 		std::pow(currentModel->getPosition().z - player->getPlayer()->getPosition().z, 2)
 	);
-	if (distance < 150) {
+	if (distance < 250) {
 		currentModel = models.at(0);
 		currentTexture = textures->at(0);
 	}
-	else if (distance < 300) {
+	else if (distance < 350) {
 		currentModel = models.at(1);
 		currentTexture = textures->at(1);
 	}

@@ -17,8 +17,8 @@ void ofApp::setup() {
 	fog = ofxFog();
 	fog.setfogColor(ofColor(100, 180, 180,100));
 	fog.setDensity(0.01);
-	fog.setFogMode(GL_EXP2);
-	fog.setFogStartEnd(900, 1000);
+	fog.setFogMode(GL_LINEAR);
+	fog.setFogStartEnd(-50, 250);
 	fog.enable();
 
 	//... Setup Sky - doesnt work :)
@@ -612,6 +612,7 @@ void ofApp::Cube::drawCube() {
 	cubeSides[1]->drawFaces();
 	cubeSides[2]->drawFaces();
 	cubeSides[3]->drawFaces();
+	ofSetColor(ofColor(255, 255, 255, 90));
 	cubeSides[4]->drawFaces();
 	cubeSides[5]->drawFaces();
 	glDisable(GL_BLEND);
