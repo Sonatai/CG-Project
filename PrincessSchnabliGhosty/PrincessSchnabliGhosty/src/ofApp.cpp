@@ -22,8 +22,40 @@ void ofApp::setup() {
 	fog.enable();
 
 	//... Setup Sky - doesnt work :)
-	sky.load("skybox.jpeg");
-	sky.setAnchorPoint(1, 1);
+	grinchySkyboxTexture = new ofTexture();
+	ofLoadImage(*grinchySkyboxTexture, "skybox.jpg");
+	generateMipMap(grinchySkyboxTexture);
+
+	grinchySkybox.push_back(new ofPlanePrimitive());
+	grinchySkybox.push_back(new ofPlanePrimitive());
+	grinchySkybox.push_back(new ofPlanePrimitive());
+	//grinchySkybox.push_back(new ofPlanePrimitive());
+
+
+	ofPushMatrix();
+	grinchySkybox[0]->set(1000, 500);
+	grinchySkybox[0]->setPosition(500, 250, 0);
+	grinchySkybox[0]->setResolution(2, 2);
+	grinchySkybox[0]->rotateDeg(90, 0, 1, 0);
+	ofPopMatrix();
+	ofPushMatrix();
+	grinchySkybox[1]->set(1000, 500);
+	grinchySkybox[1]->setPosition(-500, 250, 0);
+	grinchySkybox[1]->setResolution(2, 2);
+	grinchySkybox[1]->rotateDeg(-90, 0, 1, 0);
+	ofPopMatrix();
+	ofPushMatrix();
+	grinchySkybox[2]->set(1000, 500);
+	grinchySkybox[2]->setPosition(0, 250, -500);
+	grinchySkybox[2]->setResolution(2, 2);
+	grinchySkybox[2]->rotateDeg(180, 0, 1, 0);
+	ofPopMatrix();
+	/*ofPushMatrix();
+	grinchySkybox[3]->set(1000, 1000);
+	grinchySkybox[3]->setPosition(0, 500, 500);
+	grinchySkybox[3]->setResolution(2, 2);
+	grinchySkybox[3]->rotateDeg(0, 0, 1, 0);
+	ofPopMatrix();*/
 
 	//... Setup Ground
 	
@@ -257,6 +289,11 @@ void ofApp::draw(){
 	ofDrawGrid();
 	glEnable(GL_NORMALIZE);
 
+	for (auto i = grinchySkybox.begin(); i != grinchySkybox.end(); i++) {
+		grinchySkyboxTexture->bind();
+		(*i)->drawFaces();
+		grinchySkyboxTexture->unbind();
+	}
 	ofPushMatrix();
 	ofRotateXDeg(90);
 	groundTex->bind();

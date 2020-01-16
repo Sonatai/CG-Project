@@ -83,6 +83,8 @@ private:
 	Tree* testTree3;
 	Tree* testTree4;
 	int LODCount = 30;
+	vector<ofPlanePrimitive*> grinchySkybox;
+	ofTexture* grinchySkyboxTexture;
 
 	Schnabli* player;
 	bool isMoving = false;
